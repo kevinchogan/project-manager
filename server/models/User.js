@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
+require('dotenv').config();
 
 const userSchema = new Schema({
   username: {
@@ -23,7 +24,7 @@ const userSchema = new Schema({
 
 userSchema.pre('save', async function (next) {
   if (this.isNew || this.isModified('password')) {
-    const saltRounds = 10;
+    const saltRounds = parseInt(process.env.SALT_ITERATION);
     this.password = await bcrypt.hash(this.password, saltRounds);
   }
 
