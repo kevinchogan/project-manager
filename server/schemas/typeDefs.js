@@ -13,13 +13,31 @@ const typeDefs = `
     user: User
   }
 
+  type Milestone {
+    _id: ID
+    name: String
+    due_date: String
+    features: [ID]
+  }
+
+  type Project {
+    _id: ID
+    name: String
+    owner: User
+    due_date: String
+    milestones: Milestone
+  }
+
   type Query {
-    users: [User]
+    users(id: ID): [User]
+    me: User
+    project(name: String!): Project
   }
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
+    deleteUser(userId: String!): User
   }
 `;
 
