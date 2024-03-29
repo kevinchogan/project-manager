@@ -21,12 +21,6 @@ const projectSchema = new Schema({
       ref: "milestone",
     },
   ],
-  disciplines: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "disciopline",
-    },
-  ],
 });
 
 const Project = model("project", projectSchema);

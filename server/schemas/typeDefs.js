@@ -1,11 +1,15 @@
 const typeDefs = `
+  type Discipline {
+    _id: ID
+    name: String
+  }
 
   type User {
     _id: ID
     username: String
     email: String
     password: String
-    instructor: Boolean
+    discipline: Discipline
   }
   
   type Auth {
@@ -32,6 +36,7 @@ const typeDefs = `
     users(id: ID): [User]
     me: User
     project(name: String!): Project
+    disciplines: [Discipline]
   }
 
   type Mutation {

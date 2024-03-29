@@ -16,6 +16,10 @@ const taskSchema = new Schema({
   commitment: {
     type: Number,
   },
+  actual: {
+    type: Number,
+    default: 0,
+  },
   percent_complete: {
     type: Number,
     default: 0,
