@@ -118,7 +118,7 @@ const makeUser = async (discipline) => {
     const passwordHash = await bcrypt.hash('password1234', salt);
     const newUser = {
         _id: new mongoose.Types.ObjectId(),
-        name: `${firstName} ${lastName}`,
+        username: `${firstName} ${lastName}`,
         email: `${firstName}.${lastName}@gmail.com`,
         password: passwordHash,
         discipline: discipline,

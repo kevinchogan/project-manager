@@ -26,7 +26,6 @@ const populateUserData = async (discData) => {
         newUser = await makeUser(discData[i]._id)
         userData.push(newUser);
     } 
-    console.log(userData);
     return userData; 
 }
 
@@ -42,14 +41,16 @@ const populateProjectData = async (userData, discData) => {
         }
         milestones[i] = {
             name: name,
-            dueDate: dueDate,
+            due_date: dueDate,
             features: features,
         }
     }
 
+    const dueDate = new Date(2024, 5, 1, 12, 0, 0 ,0);
     projects[0] = {
         name: "Mandalorian",
         owner: userData[0]._id,
+        due_date: dueDate,
         milestones: milestones,
     }
 

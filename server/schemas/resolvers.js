@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Discipline, Project } = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
@@ -7,7 +7,7 @@ const resolvers = {
       if (context.user) {
         try {
           const userId = id ? { _id: id } : {};
-          return await User.find(userId);
+          return await User.find(userId).populate("discipline");
         } catch (error) {
           if (id) {
             console.error("Invalid user ID!");
@@ -24,7 +24,7 @@ const resolvers = {
     me: async (parent, args, context) => {
       if (context.user) {
         try {
-          return User.findOne({ _id: context.user._id });
+          return User.findOne({ _id: context.user._id }).populate("discipline");
         } catch (error) {
           console.error("Failed to get logged in user!");
           throw new Error(`Failed to get user: ${error.message}`);
@@ -35,10 +35,16 @@ const resolvers = {
     project: async (Parent, { name }, context) => {
       if (context.user) {
         try {
-          return await Project.find({ name: name }).populate("milestones");
+          const projectName = name ? { name: name } : {};
+          return await Project.find(projectName);
         } catch (error) {
-          console.error("Invalid project name!");
-          throw new Error(`Failed to get project: ${error.message}`);
+          if (name) {
+            console.error("Invalid project name!");
+            throw new Error(`Failed to get project: ${error.message}`);
+          } else {
+            console.error("Failed to get all projects!");
+            throw new Error(`Failed to get all projects: ${error.message}`);
+          }          
         }
       }
       throw AuthenticationError;
@@ -63,7 +69,7 @@ const resolvers = {
       return { token, user };
     },
     login: async (parent, { email, password }) => {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email }).populate("discipline");
 
       if (!user) {
         throw AuthenticationError;
