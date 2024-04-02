@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const featureNames = [
   "Dynamic weather system affecting gameplay",
   "Procedurally generated dungeons",
@@ -70,6 +71,7 @@ const makeFeature = async (userData, discData) => {
     const tasks = [];
     for (let i = 1; i < userData.length; i++) {
         const task = {
+            _id: new mongoose.Types.ObjectId(),
             name: `${shortName} - ${discData[i].name}`,
             resource: userData[i]._id,
             estimate: Math.floor(duration * 0.8),
@@ -80,6 +82,7 @@ const makeFeature = async (userData, discData) => {
     }
     
     const feature = {
+        _id: new mongoose.Types.ObjectId(),
         name: featureName,
         owner: userData[0]._id,
         tasks: tasks,

@@ -29,13 +29,13 @@ const typeDefs = `
     name: String
     owner: User
     due_date: String
-    milestones: Milestone
+    milestones: [Milestone]
   }
 
   type Query {
     users(id: ID): [User]
     me: User
-    project(name: String): Project
+    projects(name: String): [Project]
     disciplines: [Discipline]
   }
 

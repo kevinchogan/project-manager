@@ -33,6 +33,7 @@ const populateProjectData = async (userData, discData) => {
     const projects = [];
     const milestones = [];
     for (let i = 0; i < 2; i++) {
+        const id = new mongoose.Types.ObjectId();
         const name = `Milestone ${i + 1}`;
         const dueDate = new Date(2024, 5, 1, 12, 0, 0 ,0);
         const features = [];
@@ -40,6 +41,7 @@ const populateProjectData = async (userData, discData) => {
             features[j] = await makeFeature(userData, discData);
         }
         milestones[i] = {
+            _id: id,
             name: name,
             due_date: dueDate,
             features: features,
@@ -47,7 +49,9 @@ const populateProjectData = async (userData, discData) => {
     }
 
     const dueDate = new Date(2024, 5, 1, 12, 0, 0 ,0);
+    const id = new mongoose.Types.ObjectId();
     projects[0] = {
+        _id: id,
         name: "Mandalorian",
         owner: userData[0]._id,
         due_date: dueDate,

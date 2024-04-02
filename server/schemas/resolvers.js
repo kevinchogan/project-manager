@@ -32,11 +32,14 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
-    project: async (Parent, { name }, context) => {
+    projects: async (Parent, { name }, context) => {
       if (context.user) {
         try {
           const projectName = name ? { name: name } : {};
-          return await Project.find(projectName);
+          return await Project.find(projectName).populate({
+            path: "owner",
+            populate: {path: "discipline"}
+          });
         } catch (error) {
           if (name) {
             console.error("Invalid project name!");
