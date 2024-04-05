@@ -17,11 +17,28 @@ const typeDefs = `
     user: User
   }
 
-  type Milestone {
+  type Task {
     _id: ID
     name: String
+    resource: User
+    estimate: Float
+    commitment: Float
+    actual: Float
+    percent_complete: Float
+    design: String
+    predecessors: [Task]
+  }
+
+  type Feature {
+    name: String
+    owner: User
+    tasks: [Task]
+  }
+
+  type Milestone {
+    name: String
     due_date: String
-    features: [ID]
+    features: [Feature]
   }
 
   type Project {
@@ -37,6 +54,7 @@ const typeDefs = `
     me: User
     projects(name: String): [Project]
     disciplines: [Discipline]
+    tasks(id: ID): [Task]
   }
 
   type Mutation {

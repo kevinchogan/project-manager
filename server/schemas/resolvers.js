@@ -1,4 +1,4 @@
-const { User, Discipline, Project } = require("../models");
+const { User, Discipline, Project, Task } = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
@@ -32,14 +32,33 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
-    projects: async (Parent, { name }, context) => {
+    projects: async (parent, { name }, context) => {
       if (context.user) {
         try {
           const projectName = name ? { name: name } : {};
-          return await Project.find(projectName).populate({
+          const projects =  await Project.find(projectName)
+          .populate({
             path: "owner",
             populate: {path: "discipline"}
           });
+
+          for (let project of projects) {
+            for (let milestone of project.milestones) {
+              for (let feature of milestone.features) {
+                feature.owner = await User.findById(feature.owner);
+                const populatedTasks = [];
+                for (let taskId of feature.tasks) {
+                  let task = await Task.findById(taskId);
+                  task.resource = await User.findById(task.resource);
+                  task.resource.discipline = await Discipline.findById(task.resource.discipline);
+                  populatedTasks.push(task);
+                }
+                feature.tasks = populatedTasks;
+              }
+            }
+          }
+
+          return projects;
         } catch (error) {
           if (name) {
             console.error("Invalid project name!");
@@ -59,6 +78,23 @@ const resolvers = {
         } catch (error) {
           console.error("Failed to get disciplines!");
           throw new Error(`Failed to get disciplines: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
+    },
+    tasks: async (parent, { id }, context) => {
+      if (context.user) {
+        try {
+          const taskId = id ? { _id: id } : {};
+          return await Task.find(taskId).populate("resource");
+        } catch (error) {
+          if (id) {
+            console.error("Invalid task ID!");
+            throw new Error(`Failed to get task: ${error.message}`);
+          } else {
+            console.error("Failed to get all tasks!");
+            throw new Error(`Failed to get all tasks: ${error.message}`);
+          }
         }
       }
       throw AuthenticationError;

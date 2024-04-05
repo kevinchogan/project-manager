@@ -1,4 +1,5 @@
-const { Schema, model } = require("mongoose");
+const { Schema } = require("mongoose");
+const featureSchema = require("./featureSchema")
 
 const milestoneSchema = new Schema({
   name: {
@@ -12,12 +13,9 @@ const milestoneSchema = new Schema({
   },
   features: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "feature",
+      type: featureSchema
     },
   ],
 });
 
-const Milestone = model("milestone", milestoneSchema);
-
-module.exports = Milestone;
+module.exports = milestoneSchema;

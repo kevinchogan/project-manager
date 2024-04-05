@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Task } = require("../models");
 const featureNames = [
   "Dynamic weather system affecting gameplay",
   "Procedurally generated dungeons",
@@ -68,6 +69,7 @@ const makeFeature = async (userData, discData) => {
     const designLink = "https://docs.google.com/document/d/17LGOvITM8BF1pjvhY4s8lX7h9N9joVYRICFQmjDRfYQ/edit?usp=sharing"
     const duration = Math.floor(Math.random() * 14 + 1);
     
+    const taskIds = [];
     const tasks = [];
     for (let i = 1; i < userData.length; i++) {
         const task = {
@@ -78,15 +80,17 @@ const makeFeature = async (userData, discData) => {
             commitment: duration,
             design: designLink,
         }
+        taskIds.push(task._id);
         tasks.push(task);
     }
     
     const feature = {
-        _id: new mongoose.Types.ObjectId(),
         name: featureName,
         owner: userData[0]._id,
-        tasks: tasks,
+        tasks: taskIds,
     };
+
+    await Task.collection.insertMany(tasks);
 
     return feature;
 }
