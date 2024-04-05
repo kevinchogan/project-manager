@@ -55,6 +55,7 @@ const typeDefs = `
     projects(name: String): [Project]
     disciplines: [Discipline]
     tasks(id: ID): [Task]
+    tasksByResource(resourceId: ID!): [Task]
   }
 
   type Mutation {

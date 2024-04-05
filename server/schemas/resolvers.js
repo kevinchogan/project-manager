@@ -99,6 +99,17 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
+    tasksByResource: async (parent, { resourceId }, context) => {
+      if (context.user) {
+        try {
+          return await Task.find({resource: resourceId}).populate("resource");
+        } catch (error) {
+          console.error("Invalid task resource!");
+          throw new Error(`Failed to get task: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
+    },    
   },
 
   Mutation: {
