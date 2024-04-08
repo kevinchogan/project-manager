@@ -1,4 +1,4 @@
-const { User, Discipline, Project, Task } = require("../models");
+const { User, Discipline, Project, Task, Feature } = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
@@ -150,6 +150,27 @@ const resolvers = {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
       return { token, user };
+    },
+    addTask: async (parent, {featureId, taskData }, context) => {
+      if (context.user) {
+        try {
+          let task = await Task.create(taskData);
+          const updatedFeature = await Feature.findOneAndUpdate(
+            { _id: featureId },
+            { $push: { tasks: task._id } },
+            { new: true }
+          );
+          if (!updatedFeature) {
+            throw new Error("Feature not found or failed to update");
+          }          
+          task = await Task.findById(task._id).populate('resource');
+          return task;
+        } catch (error) {
+          console.error("Failed to add task!");
+          throw new Error(`Failed to add task: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
     },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email }).populate("discipline");

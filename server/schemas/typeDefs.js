@@ -50,6 +50,17 @@ const typeDefs = `
     milestones: [Milestone]
   }
 
+  input TaskInput {
+    name: String
+    resource: ID
+    estimate: Float
+    commitment: Float
+    actual: Float
+    percent_complete: Float
+    design: String
+    predecessors: [ID]
+  }
+
   type Query {
     users(id: ID): [User]
     me: User
@@ -62,6 +73,7 @@ const typeDefs = `
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
+    addTask(featureId: ID!, taskData: TaskInput!): Task
     login(email: String!, password: String!): Auth
     deleteUser(userId: ID!): User
   }
