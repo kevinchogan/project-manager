@@ -128,40 +128,48 @@ export const GET_PROJECT = gql`
 `;
 
 export const TASKS_BY_RESOURCE = gql`
-  query tasksByResource($resourceId: ID!) {
-    tasksByResource(resourceId: $resourceId) {
+query tasksByResource($resourceId: ID!) {
+  tasksByResource(resourceId: $resourceId) {
+    _id
+    name
+    design
+    estimate
+    commitment
+    percent_complete
+    actual
+    predecessors {
       _id
       name
-      design
-      estimate
-      commitment
-      percent_complete
-      actual
-      predecessors {
-        _id
-        name
-        resource {
-          username
-        }
+      resource {
+        username
       }
     }
+    feature {
+      _id
+      name
+    }
   }
+}
 `;
 
 export const FEATURES_BY_RESOURCE = gql`
-  query featuresByResource($resourceId: ID!) {
-    featuresByResource(resourceId: $resourceId) {
+query featuresByResource($resourceId: ID!) {
+  featuresByResource(resourceId: $resourceId) {
+    _id
+    name
+    owner {
+      username
+    }
+    milestone {
       _id
       name
-      owner {
+    }
+    tasks {
+      name
+      resource {
         username
-      }
-      tasks {
-        name
-        resource {
-          username
-        }
       }
     }
   }
+}
 `;
