@@ -25,6 +25,7 @@ const typeDefs = `
     actual: Float
     percent_complete: Float
     design: String
+    feature: Feature
     predecessors: [Task]
   }
 
@@ -32,6 +33,7 @@ const typeDefs = `
     _id: ID
     name: String
     owner: User
+    milestone: Milestone
     tasks: [Task]
   }
 
@@ -39,6 +41,7 @@ const typeDefs = `
     _id: ID
     name: String
     due_date: String
+    project: Project
     features: [Feature]
   }
 

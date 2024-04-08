@@ -36,23 +36,23 @@ const resolvers = {
       if (context.user) {
         try {
           const projectName = name ? { name: name } : {};
-          const projects =  await Project.find(projectName)
-          .populate({
-            path: "owner",
-            populate: {path: "discipline"}
-          })
-          .populate({
-            path: "milestones",
-            populate: {
-              path: "features",
-              populate: [
-                { path: "tasks" },
-                { 
-                  path: "owner",
-                }
-              ]
-            }
-          });
+          const projects = await Project.find(projectName)
+            .populate({
+              path: "owner",
+              populate: { path: "discipline" },
+            })
+            .populate({
+              path: "milestones",
+              populate: {
+                path: "features",
+                populate: [
+                  { path: "tasks" },
+                  {
+                    path: "owner",
+                  },
+                ],
+              },
+            });
           return projects;
         } catch (error) {
           if (name) {
@@ -61,7 +61,7 @@ const resolvers = {
           } else {
             console.error("Failed to get all projects!");
             throw new Error(`Failed to get all projects: ${error.message}`);
-          }          
+          }
         }
       }
       throw AuthenticationError;
@@ -97,7 +97,9 @@ const resolvers = {
     tasksByResource: async (parent, { resourceId }, context) => {
       if (context.user) {
         try {
-          return await Task.find({resource: resourceId}).populate("resource");
+          return await Task.find({ resource: resourceId })
+            .populate("resource")
+            .populate("feature");
         } catch (error) {
           console.error("Invalid task resource!");
           throw new Error(`Failed to get tasks: ${error.message}`);
@@ -108,40 +110,26 @@ const resolvers = {
     featuresByResource: async (parent, { resourceId }, context) => {
       if (context.user) {
         try {
-          const projects = await Project.find()
-          .populate({
-            path: "milestones",
-            populate: {
-              path: "features",
-              populate: [
-                { path: "tasks",
-                  populate: { path: "resource" } },
-                { 
-                  path: "owner",
-                }
-              ]
-            }
-          });;
-          const featuresWithResourceTasks = [];
-          projects.forEach(project => {
-            project.milestones.forEach(milestone => {
-              milestone.features.forEach(feature => {
-                const hasResourceTask = feature.tasks.some(task => task.resource._id.toString() === resourceId);
-                if (hasResourceTask) {
-                  if (!featuresWithResourceTasks.find(f => f._id.toString() === feature._id.toString())) {
-                    featuresWithResourceTasks.push(feature);
-                  }
-                }
-              });
-            });
-          });
-          return featuresWithResourceTasks;
+          const tasks = await Task.find({ resource: resourceId });
+          const featureIds = [
+            ...new Set(tasks.map((task) => task.feature.toString())),
+          ];
+          const features = await Feature.find({ _id: { $in: featureIds } })
+            .populate({
+              path: "tasks",
+              populate: { path: "resource" },
+            })
+            .populate("owner")
+            .populate("milestone");
+          return features;
         } catch (error) {
           console.error("Invalid feature resource!");
-          throw new Error(`Failed to get features: ${error.message}`);          
+          throw new Error(`Failed to get features: ${error.message}`);
         }
       }
-      throw AuthenticationError;
+      throw AuthenticationError(
+        "You must be logged in to perform this action."
+      );
     },
   },
 
@@ -151,9 +139,10 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    addTask: async (parent, {featureId, taskData }, context) => {
+    addTask: async (parent, { featureId, taskData }, context) => {
       if (context.user) {
         try {
+          taskData.feature = featureId;
           let task = await Task.create(taskData);
           const updatedFeature = await Feature.findOneAndUpdate(
             { _id: featureId },
@@ -162,8 +151,8 @@ const resolvers = {
           );
           if (!updatedFeature) {
             throw new Error("Feature not found or failed to update");
-          }          
-          task = await Task.findById(task._id).populate('resource');
+          }
+          task = await Task.findById(task._id).populate("resource");
           return task;
         } catch (error) {
           console.error("Failed to add task!");
@@ -201,11 +190,13 @@ const resolvers = {
       throw AuthenticationError;
     },
     deleteTask: async (parent, { taskId }, context) => {
-      console.log('Received taskId:', taskId);
+      console.log("Received taskId:", taskId);
 
       if (context.user) {
         try {
-          console.log(`Deleting task with ID: ${taskId}, Type: ${typeof taskId}`);
+          console.log(
+            `Deleting task with ID: ${taskId}, Type: ${typeof taskId}`
+          );
 
           const task = await Task.findOneAndDelete({ _id: taskId });
           if (!task) {
@@ -218,7 +209,7 @@ const resolvers = {
         }
       }
       throw AuthenticationError;
-    }
+    },
   },
 };
 

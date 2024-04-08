@@ -27,6 +27,11 @@ const taskSchema = new Schema({
   design: {
     type: String,
   },
+  feature: {
+    type: Schema.Types.ObjectId,
+    ref: "feature",
+    required: true,
+  },
   predecessors: [
     {
       type: Schema.Types.ObjectId,

@@ -10,6 +10,11 @@ const milestoneSchema = new Schema({
     type: Date,
     required: true,
   },
+  project: {
+    type: Schema.Types.ObjectId,
+    ref: "project",
+    required: true,
+  },
   features: [
     {
       type: Schema.Types.ObjectId,

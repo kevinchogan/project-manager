@@ -63,7 +63,7 @@ function getShortName(inputString) {
     return words.slice(0, 2).join(' ');
 }
 
-const makeFeature = async (userData, discData) => {
+const makeFeature = async (userData, discData, milestoneId) => {
     const featureName = getRandomArrItem(featureNames);
     const shortName = getShortName(featureName);
     const designLink = "https://docs.google.com/document/d/17LGOvITM8BF1pjvhY4s8lX7h9N9joVYRICFQmjDRfYQ/edit?usp=sharing"
@@ -71,6 +71,8 @@ const makeFeature = async (userData, discData) => {
     
     const taskIds = [];
     const tasks = [];
+    const featureId = new mongoose.Types.ObjectId();
+
     for (let i = 1; i < userData.length; i++) {
         const task = {
             _id: new mongoose.Types.ObjectId(),
@@ -79,15 +81,17 @@ const makeFeature = async (userData, discData) => {
             estimate: Math.floor(duration * 0.8),
             commitment: duration,
             design: designLink,
+            feature: featureId,
         }
         taskIds.push(task._id);
         tasks.push(task);
     }
     
     const feature = {
-        _id: new mongoose.Types.ObjectId(),
+        _id: featureId,
         name: featureName,
         owner: userData[0]._id,
+        milestone: milestoneId,
         tasks: taskIds,
     };
 
