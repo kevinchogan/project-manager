@@ -200,6 +200,25 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
+    deleteTask: async (parent, { taskId }, context) => {
+      console.log('Received taskId:', taskId);
+
+      if (context.user) {
+        try {
+          console.log(`Deleting task with ID: ${taskId}, Type: ${typeof taskId}`);
+
+          const task = await Task.findOneAndDelete({ _id: taskId });
+          if (!task) {
+            throw new Error("Task not found or already deleted");
+          }
+          return task;
+        } catch (error) {
+          console.error("Failed to delete task!");
+          throw new Error(`Failed to delete task: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
+    }
   },
 };
 

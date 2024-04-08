@@ -76,6 +76,7 @@ const typeDefs = `
     addTask(featureId: ID!, taskData: TaskInput!): Task
     login(email: String!, password: String!): Auth
     deleteUser(userId: ID!): User
+    deleteTask(taskId: ID!): Task
   }
 `;
 
