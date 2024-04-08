@@ -85,6 +85,7 @@ const makeFeature = async (userData, discData) => {
     }
     
     const feature = {
+        _id: new mongoose.Types.ObjectId(),
         name: featureName,
         owner: userData[0]._id,
         tasks: taskIds,

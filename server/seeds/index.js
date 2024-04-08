@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 require('dotenv').config();
 
 const db = require("../config/connection");
-const { User, Project, Discipline } = require("../models");
+const { User, Project, Discipline, Feature, Milestone } = require("../models");
 const cleanDB = require("./cleanDB");
 const makeUser = require("./users");
 const makeFeature = require("./features");
@@ -32,32 +32,36 @@ const populateUserData = async (discData) => {
 const populateProjectData = async (userData, discData) => {
     const projects = [];
     const milestones = [];
+    const milestoneIds = [];
     for (let i = 0; i < 2; i++) {
         const id = new mongoose.Types.ObjectId();
         const name = `Milestone ${i + 1}`;
         const dueDate = new Date(2024, 5, 1, 12, 0, 0 ,0);
         const features = [];
+        const featureIds = [];
         for (let j = 0; j < 3; j++) {
             features[j] = await makeFeature(userData, discData);
+            featureIds[j] = features[j]._id;
         }
         milestones[i] = {
             _id: id,
             name: name,
             due_date: dueDate,
-            features: features,
+            features: featureIds,
         }
+        milestoneIds[i] = id;
+        await Feature.collection.insertMany(features);
     }
 
     const dueDate = new Date(2024, 5, 1, 12, 0, 0 ,0);
-    const id = new mongoose.Types.ObjectId();
     projects[0] = {
-        _id: id,
+        _id: new mongoose.Types.ObjectId(),
         name: "Mandalorian",
         owner: userData[0]._id,
         due_date: dueDate,
-        milestones: milestones,
+        milestones: milestoneIds,
     }
-
+    await Milestone.collection.insertMany(milestones);
     return projects
 }
 
@@ -66,6 +70,9 @@ db.once("open", async () => {
         await cleanDB("Discipline", "disciplines");
         await cleanDB("User", "users");
         await cleanDB("Project", "projects");
+        await cleanDB("Milestone", "milestones");
+        await cleanDB("Task", "tasks");
+        await cleanDB("Feature", "features");
 
         const discData = await populateDisciplineData();
         const userData = await populateUserData(discData);

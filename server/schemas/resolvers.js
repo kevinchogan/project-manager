@@ -40,24 +40,19 @@ const resolvers = {
           .populate({
             path: "owner",
             populate: {path: "discipline"}
-          });
-
-          for (let project of projects) {
-            for (let milestone of project.milestones) {
-              for (let feature of milestone.features) {
-                feature.owner = await User.findById(feature.owner);
-                const populatedTasks = [];
-                for (let taskId of feature.tasks) {
-                  let task = await Task.findById(taskId);
-                  task.resource = await User.findById(task.resource);
-                  task.resource.discipline = await Discipline.findById(task.resource.discipline);
-                  populatedTasks.push(task);
+          })
+          .populate({
+            path: "milestones",
+            populate: {
+              path: "features",
+              populate: [
+                { path: "tasks" },
+                { 
+                  path: "owner",
                 }
-                feature.tasks = populatedTasks;
-              }
+              ]
             }
-          }
-
+          });
           return projects;
         } catch (error) {
           if (name) {
@@ -105,11 +100,49 @@ const resolvers = {
           return await Task.find({resource: resourceId}).populate("resource");
         } catch (error) {
           console.error("Invalid task resource!");
-          throw new Error(`Failed to get task: ${error.message}`);
+          throw new Error(`Failed to get tasks: ${error.message}`);
         }
       }
       throw AuthenticationError;
-    },    
+    },
+    featuresByResource: async (parent, { resourceId }, context) => {
+      if (context.user) {
+        try {
+          const projects = await Project.find()
+          .populate({
+            path: "milestones",
+            populate: {
+              path: "features",
+              populate: [
+                { path: "tasks",
+                  populate: { path: "resource" } },
+                { 
+                  path: "owner",
+                }
+              ]
+            }
+          });;
+          const featuresWithResourceTasks = [];
+          projects.forEach(project => {
+            project.milestones.forEach(milestone => {
+              milestone.features.forEach(feature => {
+                const hasResourceTask = feature.tasks.some(task => task.resource._id.toString() === resourceId);
+                if (hasResourceTask) {
+                  if (!featuresWithResourceTasks.find(f => f._id.toString() === feature._id.toString())) {
+                    featuresWithResourceTasks.push(feature);
+                  }
+                }
+              });
+            });
+          });
+          return featuresWithResourceTasks;
+        } catch (error) {
+          console.error("Invalid feature resource!");
+          throw new Error(`Failed to get features: ${error.message}`);          
+        }
+      }
+      throw AuthenticationError;
+    },
   },
 
   Mutation: {

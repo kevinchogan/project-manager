@@ -8,7 +8,6 @@ const typeDefs = `
     _id: ID
     username: String
     email: String
-    password: String
     discipline: Discipline
   }
   
@@ -30,12 +29,14 @@ const typeDefs = `
   }
 
   type Feature {
+    _id: ID
     name: String
     owner: User
     tasks: [Task]
   }
 
   type Milestone {
+    _id: ID
     name: String
     due_date: String
     features: [Feature]
@@ -56,12 +57,13 @@ const typeDefs = `
     disciplines: [Discipline]
     tasks(id: ID): [Task]
     tasksByResource(resourceId: ID!): [Task]
+    featuresByResource(resourceId: ID!): [Feature]
   }
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    deleteUser(userId: String!): User
+    deleteUser(userId: ID!): User
   }
 `;
 
