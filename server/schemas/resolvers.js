@@ -81,7 +81,7 @@ const resolvers = {
       if (context.user) {
         try {
           const taskId = id ? { _id: id } : {};
-          return await Task.find(taskId).populate("resource");
+          return await Task.find(taskId).populate("resource").populate("feature");
         } catch (error) {
           if (id) {
             console.error("Invalid task ID!");
@@ -190,14 +190,8 @@ const resolvers = {
       throw AuthenticationError;
     },
     deleteTask: async (parent, { taskId }, context) => {
-      console.log("Received taskId:", taskId);
-
       if (context.user) {
         try {
-          console.log(
-            `Deleting task with ID: ${taskId}, Type: ${typeof taskId}`
-          );
-
           const task = await Task.findOneAndDelete({ _id: taskId });
           if (!task) {
             throw new Error("Task not found or already deleted");
