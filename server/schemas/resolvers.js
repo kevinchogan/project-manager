@@ -209,6 +209,37 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
+    moveTask: async (parent, { taskId, newFeatureId }, context) => {
+      if (context.user) {
+        try {
+          const task = await Task.findById(taskId);
+          if (!taskId) {
+            console.error("Task not found");
+            throw new Error("Task not found");
+          }
+          const oldFeatureId = task.feature;
+          const oldFeature = await Feature.findByIdAndUpdate(
+            oldFeatureId,
+            { $pull: { tasks: task._id } },
+            { new: true }
+          );
+          const newFeature = await Feature.findByIdAndUpdate(
+            newFeatureId,
+            { $push: { tasks: task._id } },
+            { new: true }
+          );
+          task.feature = newFeatureId;
+
+          await task.save();
+
+          return task;
+        } catch (error) {
+          console.error("Failed to move task!");
+          throw new Error(`Failed to move task:  ${error.message}`)
+        }
+      }
+      throw AuthenticationError;
+    },
     deleteUser: async (parent, { userId }, context) => {
       if (context.user) {
         try {

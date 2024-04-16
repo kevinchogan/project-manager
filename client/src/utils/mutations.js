@@ -51,6 +51,18 @@ export const MOVE_FEATURE = gql`
   }
 `;
 
+export const MOVE_TASK = gql`
+  mutation moveTask($taskId: ID!, $newFeatureId: ID!) {
+    moveTask(taskId: $taskId, newFeatureId: $newFeatureId) {
+      _id
+      name
+      feature {
+        _id
+      }
+    }
+  }
+`;
+
 export const DELETE_TASK = gql`
   mutation deleteTask($taskId: ID!) {
     deleteTask(taskId: $taskId) {
