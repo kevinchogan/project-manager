@@ -63,6 +63,26 @@ export const MOVE_TASK = gql`
   }
 `;
 
+export const UPDATE_TASK = gql`
+  mutation updateTask($taskId: ID!, $taskData: TaskInput) {
+    updateTask(taskId: $taskId, taskData: $taskData) {
+      _id
+      name
+      estimate
+      commitment
+      percent_complete
+      actual
+      design
+      resource {
+        _id
+      }
+      predecessors {
+        _id
+      }
+    }
+  }
+`;
+
 export const DELETE_TASK = gql`
   mutation deleteTask($taskId: ID!) {
     deleteTask(taskId: $taskId) {

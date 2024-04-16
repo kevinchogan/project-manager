@@ -240,6 +240,21 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
+    updateTask: async (parent, { taskId, taskData }, context) => {
+      if (context.user) {
+        try {
+          const task = await Task.findByIdAndUpdate(
+            taskId,
+            { ...taskData },
+            { new: true }
+          );
+          return task;
+        } catch (error) {
+          console.error("Failed to update task!");
+          throw new Error(`Failed top update task: ${error.message}`)
+        }
+      }
+    },
     deleteUser: async (parent, { userId }, context) => {
       if (context.user) {
         try {
