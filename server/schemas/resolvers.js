@@ -255,6 +255,52 @@ const resolvers = {
         }
       }
     },
+    addPredecessor: async (parent, { taskId, predId }, context) => {
+      if (context.user) {
+        try {
+          const task = await Task.findById(taskId);
+          if (!task) {
+            throw new Error("Task not found");
+          }
+          if (task.predecessors.includes(predId)) {
+            throw new Error("This predecessor is already present for this task");
+          }
+          const updatedTask = await Task.findByIdAndUpdate(
+            taskId,
+            { $push: { predecessors: predId } },
+            { new: true }
+          )
+          return updatedTask;
+        }
+        catch (error) {
+          console.error("Add predecessor failed!");
+          throw new Error(`Add predecessor failed: ${error.message}`)
+        }
+      }
+    },
+    removePredecessor: async (parent, { taskId, predId }, context) => {
+      if (context.user) {
+        try {
+          const task = await Task.findById(taskId);
+          if (!task) {
+            throw new Error("Task not found");
+          }
+          if (!task.predecessors.includes(predId)) {
+            throw new Error("Predecessor not found in the task");
+          }
+          const updatedTask = await Task.findByIdAndUpdate(
+            taskId,
+            { $pull: { predecessors: predId } },
+            { new: true }
+          )
+          return updatedTask;
+        }
+        catch (error) {
+          console.error("Remove predecessor failed!");
+          throw new Error(`Remove predecessor failed: ${error.message}`)
+        }
+      }
+    },
     deleteUser: async (parent, { userId }, context) => {
       if (context.user) {
         try {

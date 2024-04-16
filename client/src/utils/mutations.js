@@ -83,6 +83,30 @@ export const UPDATE_TASK = gql`
   }
 `;
 
+export const ADD_PREDECESSOR = gql`
+  mutation addPredecessor($taskId: ID!, $predId: ID!) {
+    addPredecessor(taskId: $taskId, predId: $predId) {
+      _id
+      name
+      predecessors {
+        _id
+      }
+    }
+  }
+`;
+
+export const REMOVE_PREDECESSOR = gql`
+mutation removePredecessor($taskId: ID!, $predId: ID!) {
+  removePredecessor(taskId: $taskId, predId: $predId) {
+    _id
+    name
+    predecessors {
+      _id
+    }
+  }
+}
+`;
+
 export const DELETE_TASK = gql`
   mutation deleteTask($taskId: ID!) {
     deleteTask(taskId: $taskId) {

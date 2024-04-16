@@ -81,6 +81,8 @@ const typeDefs = `
     moveFeature(featureId: ID!, newMilestoneId: ID!): Feature
     moveTask(taskId: ID!, newFeatureId: ID!): Task
     updateTask(taskId: ID!, taskData: TaskInput): Task
+    addPredecessor(taskId: ID!, predId: ID!): Task
+    removePredecessor(taskId: ID!, predId: ID!): Task
     deleteUser(userId: ID!): User
     deleteTask(taskId: ID!): Task
   }
