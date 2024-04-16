@@ -1,4 +1,11 @@
-const { User, Discipline, Project, Task, Feature, Milestone } = require("../models");
+const {
+  User,
+  Discipline,
+  Project,
+  Task,
+  Feature,
+  Milestone,
+} = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
@@ -81,7 +88,9 @@ const resolvers = {
       if (context.user) {
         try {
           const taskId = id ? { _id: id } : {};
-          return await Task.find(taskId).populate("resource").populate("feature");
+          return await Task.find(taskId)
+            .populate("resource")
+            .populate("feature");
         } catch (error) {
           if (id) {
             console.error("Invalid task ID!");
@@ -139,28 +148,6 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    addTask: async (parent, { featureId, taskData }, context) => {
-      if (context.user) {
-        try {
-          taskData.feature = featureId;
-          let task = await Task.create(taskData);
-          const updatedFeature = await Feature.findOneAndUpdate(
-            { _id: featureId },
-            { $push: { tasks: task._id } },
-            { new: true }
-          );
-          if (!updatedFeature) {
-            throw new Error("Feature not found or failed to update");
-          }
-          task = await Task.findById(task._id).populate("resource");
-          return task;
-        } catch (error) {
-          console.error("Failed to add task!");
-          throw new Error(`Failed to add task: ${error.message}`);
-        }
-      }
-      throw AuthenticationError;
-    },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email }).populate("discipline");
 
@@ -177,6 +164,97 @@ const resolvers = {
       const token = signToken(user);
 
       return { token, user };
+    },
+    addProject: async (parent, { name, owner, dueDate }, context) => {
+      if (context.user) {
+        try {
+          let project = await Project.create({
+            name: name,
+            owner: owner,
+            due_date: dueDate,
+          });
+          project = await Project.findById(project._id).populate("owner");
+          return project;
+        } catch (error) {
+          console.error("Failed to add project!");
+          throw new Error(`Failed to add project: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
+    },
+    addMilestone: async (parent, { projectId, name, dueDate }, context) => {
+      if (context.user) {
+        try {
+          const project = await Project.findById(projectId);
+          if (!project) {
+            console.error("Project not found");
+            throw new Error("Project not found");
+          }
+          let milestone = await Milestone.create({
+            name: name,
+            due_date: dueDate,
+            project: projectId,
+          });
+          await Project.findByIdAndUpdate(projectId, {
+            $push: { milestones: milestone._id },
+          });
+          milestone = await Milestone.findById(milestone._id).populate("project");
+          return milestone;
+        } catch (error) {
+          console.error("Failed to add milestone!");
+          throw new Error(`Failed to add milestone: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
+    },
+    addFeature: async (parent, { milestoneId, name, owner }, context) => {
+      if (context.user) {
+        try {
+          const milestone = await Milestone.findById(milestoneId);
+          if (!milestone) {
+            console.error("Milestone not found");
+            throw new Error("Milestone not found");
+          }
+          let feature = await Feature.create({
+            name: name,
+            owner: owner,
+            milestone: milestoneId,
+          });
+          await Milestone.findByIdAndUpdate(
+            { _id: milestoneId },
+            { $push: { features: feature._id } }
+          );
+          feature = await Feature.findById(feature._id).populate("owner").populate("milestone");
+          return feature;
+        } catch (error) {
+          console.error("Failed to add feature!");
+          throw new Error(`Failed to add feature: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
+    },
+    addTask: async (parent, { featureId, taskData }, context) => {
+      if (context.user) {
+        try {
+          const feature = await Feature.findById(featureId);
+          if (!feature) {
+            console.error("Feature not found");
+            throw new Error("Feature not found");
+          }
+          taskData.feature = featureId;
+          let task = await Task.create(taskData);
+          await Feature.findOneAndUpdate(
+            { _id: featureId },
+            { $push: { tasks: task._id } }
+          );
+          task = await Task.findById(task._id).populate("resource").populate("feature");
+          return task;
+        } catch (error) {
+          console.error("Failed to add task!");
+          throw new Error(`Failed to add task: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
     },
     moveFeature: async (parent, { featureId, newMilestoneId }, context) => {
       if (context.user) {
@@ -204,7 +282,7 @@ const resolvers = {
           return feature;
         } catch (error) {
           console.error("Failed to move feature!");
-          throw new Error(`Failed to move feature:  ${error.message}`)
+          throw new Error(`Failed to move feature:  ${error.message}`);
         }
       }
       throw AuthenticationError;
@@ -235,7 +313,7 @@ const resolvers = {
           return task;
         } catch (error) {
           console.error("Failed to move task!");
-          throw new Error(`Failed to move task:  ${error.message}`)
+          throw new Error(`Failed to move task:  ${error.message}`);
         }
       }
       throw AuthenticationError;
@@ -251,7 +329,7 @@ const resolvers = {
           return task;
         } catch (error) {
           console.error("Failed to update task!");
-          throw new Error(`Failed top update task: ${error.message}`)
+          throw new Error(`Failed top update task: ${error.message}`);
         }
       }
     },
@@ -263,18 +341,19 @@ const resolvers = {
             throw new Error("Task not found");
           }
           if (task.predecessors.includes(predId)) {
-            throw new Error("This predecessor is already present for this task");
+            throw new Error(
+              "This predecessor is already present for this task"
+            );
           }
           const updatedTask = await Task.findByIdAndUpdate(
             taskId,
             { $push: { predecessors: predId } },
             { new: true }
-          )
+          );
           return updatedTask;
-        }
-        catch (error) {
+        } catch (error) {
           console.error("Add predecessor failed!");
-          throw new Error(`Add predecessor failed: ${error.message}`)
+          throw new Error(`Add predecessor failed: ${error.message}`);
         }
       }
     },
@@ -292,12 +371,11 @@ const resolvers = {
             taskId,
             { $pull: { predecessors: predId } },
             { new: true }
-          )
+          );
           return updatedTask;
-        }
-        catch (error) {
+        } catch (error) {
           console.error("Remove predecessor failed!");
-          throw new Error(`Remove predecessor failed: ${error.message}`)
+          throw new Error(`Remove predecessor failed: ${error.message}`);
         }
       }
     },

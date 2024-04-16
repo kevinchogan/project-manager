@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const QUERY_USERS = gql`
-  query users {
+  query Users {
     users {
       _id
       username
@@ -14,7 +14,7 @@ export const QUERY_USERS = gql`
 `;
 
 export const GET_ME = gql`
-  query me {
+  query Me {
     me {
       _id
       discipline {
@@ -27,7 +27,7 @@ export const GET_ME = gql`
 `;
 
 export const GET_DISCIPLINES = gql`
-  query disciplines {
+  query Disciplines {
     disciplines {
       name
     }
@@ -35,7 +35,7 @@ export const GET_DISCIPLINES = gql`
 `;
 
 export const GET_TASKS = gql`
-  query tasks {
+  query Tasks {
     tasks {
       _id
       name
@@ -53,7 +53,7 @@ export const GET_TASKS = gql`
 `;
 
 export const GET_TASK = gql`
-  query task($tasksId: ID) {
+  query Task($tasksId: ID) {
     tasks(id: $tasksId) {
       name
       design
@@ -70,7 +70,7 @@ export const GET_TASK = gql`
 `;
 
 export const GET_PROJECTS = gql`
-  query projects {
+  query Projects {
     projects {
       _id
       name
@@ -99,7 +99,7 @@ export const GET_PROJECTS = gql`
 `;
 
 export const GET_PROJECT = gql`
-  query project($name: String) {
+  query Project($name: String) {
     projects(name: $name) {
       _id
       name
@@ -128,7 +128,7 @@ export const GET_PROJECT = gql`
 `;
 
 export const TASKS_BY_RESOURCE = gql`
-query tasksByResource($resourceId: ID!) {
+query TasksByResource($resourceId: ID!) {
   tasksByResource(resourceId: $resourceId) {
     _id
     name
@@ -153,7 +153,7 @@ query tasksByResource($resourceId: ID!) {
 `;
 
 export const FEATURES_BY_RESOURCE = gql`
-query featuresByResource($resourceId: ID!) {
+query FeaturesByResource($resourceId: ID!) {
   featuresByResource(resourceId: $resourceId) {
     _id
     name

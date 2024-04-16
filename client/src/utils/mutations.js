@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const LOGIN_USER = gql`
-  mutation login($email: String!, $password: String!) {
+  mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
       user {
@@ -13,7 +13,7 @@ export const LOGIN_USER = gql`
 `;
 
 export const ADD_USER = gql`
-  mutation addUser($username: String!, $email: String!, $password: String!) {
+  mutation AddUser($username: String!, $email: String!, $password: String!) {
     addUser(username: $username, email: $email, password: $password) {
       token
       user {
@@ -24,8 +24,51 @@ export const ADD_USER = gql`
   }
 `;
 
+export const ADD_PROJECT = gql`
+  mutation AddProject($name: String!, $owner: ID!, $dueDate: String!) {
+    addProject(name: $name, owner: $owner, dueDate: $dueDate) {
+      _id
+      name
+      owner {
+        _id
+        username
+      }
+      due_date
+    }
+  }
+`;
+
+export const ADD_MILESTONE = gql`
+mutation AddMilestone($projectId: ID!, $name: String!, $dueDate: String!) {
+  addMilestone(projectId: $projectId, name: $name, dueDate: $dueDate) {
+    _id
+    name
+    project {
+      _id
+      name
+    }
+  }
+`;
+
+export const ADD_FEATURE = gql`
+  mutation AddFeature($milestoneId: ID!, $name: String!, $owner: ID!) {
+    addFeature(milestoneId: $milestoneId, name: $name, owner: $owner) {
+      _id
+      name
+      owner {
+        _id
+        username
+      }
+      milestone {
+        _id
+        name
+      }
+    }
+  }
+`;
+
 export const ADD_TASK = gql`
-  mutation addTask($featureId: ID!, $taskData: TaskInput!) {
+  mutation AddTask($featureId: ID!, $taskData: TaskInput!) {
     addTask(featureId: $featureId, taskData: $taskData) {
       _id
       name
@@ -35,12 +78,16 @@ export const ADD_TASK = gql`
       }
       estimate
       commitment
+      feature {
+        _id
+        name
+      }
     }
   }
 `;
 
 export const MOVE_FEATURE = gql`
-  mutation moveFeature($featureId: ID!, $newMilestoneId: ID!) {
+  mutation MoveFeature($featureId: ID!, $newMilestoneId: ID!) {
     moveFeature(featureId: $featureId, newMilestoneId: $newMilestoneId) {
       _id
       milestone {
@@ -52,7 +99,7 @@ export const MOVE_FEATURE = gql`
 `;
 
 export const MOVE_TASK = gql`
-  mutation moveTask($taskId: ID!, $newFeatureId: ID!) {
+  mutation MoveTask($taskId: ID!, $newFeatureId: ID!) {
     moveTask(taskId: $taskId, newFeatureId: $newFeatureId) {
       _id
       name
@@ -64,7 +111,7 @@ export const MOVE_TASK = gql`
 `;
 
 export const UPDATE_TASK = gql`
-  mutation updateTask($taskId: ID!, $taskData: TaskInput) {
+  mutation UpdateTask($taskId: ID!, $taskData: TaskInput) {
     updateTask(taskId: $taskId, taskData: $taskData) {
       _id
       name
@@ -84,7 +131,7 @@ export const UPDATE_TASK = gql`
 `;
 
 export const ADD_PREDECESSOR = gql`
-  mutation addPredecessor($taskId: ID!, $predId: ID!) {
+  mutation AddPredecessor($taskId: ID!, $predId: ID!) {
     addPredecessor(taskId: $taskId, predId: $predId) {
       _id
       name
@@ -96,19 +143,19 @@ export const ADD_PREDECESSOR = gql`
 `;
 
 export const REMOVE_PREDECESSOR = gql`
-mutation removePredecessor($taskId: ID!, $predId: ID!) {
-  removePredecessor(taskId: $taskId, predId: $predId) {
-    _id
-    name
-    predecessors {
+  mutation RemovePredecessor($taskId: ID!, $predId: ID!) {
+    removePredecessor(taskId: $taskId, predId: $predId) {
       _id
+      name
+      predecessors {
+        _id
+      }
     }
   }
-}
 `;
 
 export const DELETE_TASK = gql`
-  mutation deleteTask($taskId: ID!) {
+  mutation DeleteTask($taskId: ID!) {
     deleteTask(taskId: $taskId) {
       name
     }

@@ -76,8 +76,11 @@ const typeDefs = `
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
-    addTask(featureId: ID!, taskData: TaskInput!): Task
     login(email: String!, password: String!): Auth
+    addProject(name: String!, owner: ID!, dueDate: String!): Project
+    addMilestone(projectId: ID!, name: String!, dueDate: String!): Milestone
+    addFeature(milestoneId: ID!, name: String!, owner:ID!): Feature
+    addTask(featureId: ID!, taskData: TaskInput!): Task
     moveFeature(featureId: ID!, newMilestoneId: ID!): Feature
     moveTask(taskId: ID!, newFeatureId: ID!): Task
     updateTask(taskId: ID!, taskData: TaskInput): Task
