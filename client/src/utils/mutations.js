@@ -39,6 +39,18 @@ export const ADD_TASK = gql`
   }
 `;
 
+export const MOVE_FEATURE = gql`
+  mutation moveFeature($featureId: ID!, $newMilestoneId: ID!) {
+    moveFeature(featureId: $featureId, newMilestoneId: $newMilestoneId) {
+      _id
+      milestone {
+        _id
+      }
+      name
+    }
+  }
+`;
+
 export const DELETE_TASK = gql`
   mutation deleteTask($taskId: ID!) {
     deleteTask(taskId: $taskId) {

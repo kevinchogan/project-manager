@@ -1,4 +1,4 @@
-const { User, Discipline, Project, Task, Feature } = require("../models");
+const { User, Discipline, Project, Task, Feature, Milestone } = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
@@ -177,6 +177,37 @@ const resolvers = {
       const token = signToken(user);
 
       return { token, user };
+    },
+    moveFeature: async (parent, { featureId, newMilestoneId }, context) => {
+      if (context.user) {
+        try {
+          const feature = await Feature.findById(featureId);
+          if (!feature) {
+            console.error("Feature not found");
+            throw new Error("Feature not found");
+          }
+          const oldMilestoneId = feature.milestone;
+          const oldMilestone = await Milestone.findByIdAndUpdate(
+            oldMilestoneId,
+            { $pull: { features: feature._id } },
+            { new: true }
+          );
+          const newMilestone = await Milestone.findByIdAndUpdate(
+            newMilestoneId,
+            { $push: { features: feature._id } },
+            { new: true }
+          );
+          feature.milestone = newMilestoneId;
+
+          await feature.save();
+
+          return feature;
+        } catch (error) {
+          console.error("Failed to move feature!");
+          throw new Error(`Failed to move feature:  ${error.message}`)
+        }
+      }
+      throw AuthenticationError;
     },
     deleteUser: async (parent, { userId }, context) => {
       if (context.user) {
