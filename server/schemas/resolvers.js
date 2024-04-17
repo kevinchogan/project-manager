@@ -390,6 +390,80 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
+    deleteProject: async (parent, { projectId }, context) => {
+      if (context.user) {
+        try {
+          const milestones = await Milestone.find({ project: projectId });
+          const milestoneIds = milestones.map(milestone => milestone._id);
+          
+          const features = await Feature.find({ milestone: { $in: milestoneIds } });
+          const featureIds = features.map(feature => feature._id);
+          
+          const tasks = await Task.find({ feature: { $in: featureIds } });
+          const taskIds = tasks.map(task => task._id);
+    
+          if (taskIds.length > 0) {
+            await Task.deleteMany({ _id: { $in: taskIds } });
+          }
+          if (featureIds.length > 0) {
+            await Feature.deleteMany({ _id: { $in: featureIds } });
+          }
+          if (milestoneIds.length > 0) {
+            await Milestone.deleteMany({ _id: { $in: milestoneIds } });
+          }
+    
+          const project = await Project.findOneAndDelete({ _id: projectId });
+          if (!project) {
+            throw new Error("Project not found or already deleted");
+          }
+    
+          return project;
+        } catch (error) {
+          console.error("Failed to delete project!");
+          throw new Error(`Failed to delete project: ${error.message}`);
+        }
+      }
+      throw new Error('You must be logged in to perform this action.');
+    },    
+    deleteMilestone: async (parent, { milestoneId }, context) => {
+      if (context.user) {
+        try {
+          const features = await Feature.find({ milestone: milestoneId });
+          const taskIds = features.flatMap(feature => feature.tasks);
+          if (taskIds.length > 0) {
+            await Task.deleteMany({ _id: { $in: taskIds } });
+          }
+          await Feature.deleteMany({ milestone: milestoneId });
+
+          const milestone = await Milestone.findOneAndDelete({ _id: milestoneId });
+          if (!milestone) {
+            throw new Error("Milestone not found or already deleted");
+          }
+          return milestone;
+        } catch (error) {
+          console.error("Failed to delete milestone!");
+          throw new Error(`Failed to delete milestone: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
+    },
+    deleteFeature: async (parent, { featureId }, context) => {
+      if (context.user) {
+        try {
+          const feature = await Feature.findOneAndDelete({ _id: featureId });
+          if (!feature) {
+            console.error("Feature not found or already deleted");
+            throw new Error("Feature not found or already deleted");
+          }
+          await Task.deleteMany({ feature: featureId });
+          return feature;
+        } catch (error) {
+          console.error("Failed to delete feature!");
+          throw new Error(`Failed to delete feature: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
+    }, 
     deleteTask: async (parent, { taskId }, context) => {
       if (context.user) {
         try {

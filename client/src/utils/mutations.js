@@ -154,6 +154,33 @@ export const REMOVE_PREDECESSOR = gql`
   }
 `;
 
+export const DELETE_PROJECT = gql`
+  mutation DeleteProject($projectId: ID!) {
+    deleteProject(projectId: $projectId) {
+      _id
+      name
+    }
+  }
+`;
+
+export const DELETE_MILESTONE = gql`
+  mutation DeleteMilestone($milestoneId: ID!) {
+    deleteMilestone(milestoneId: $milestoneId) {
+      _id
+      name
+    }
+  }
+`;
+
+export const DELETE_FEATURE = gql`
+  mutation DeleteFeature($featureId: ID!) {
+    deleteFeature(featureId: $featureId) {
+      _id
+      name
+    }
+  }
+`;
+
 export const DELETE_TASK = gql`
   mutation DeleteTask($taskId: ID!) {
     deleteTask(taskId: $taskId) {

@@ -87,6 +87,9 @@ const typeDefs = `
     addPredecessor(taskId: ID!, predId: ID!): Task
     removePredecessor(taskId: ID!, predId: ID!): Task
     deleteUser(userId: ID!): User
+    deleteProject(projectId: ID!): Project
+    deleteMilestone(milestoneId: ID!): Milestone
+    deleteFeature(featureId: ID!): Feature
     deleteTask(taskId: ID!): Task
   }
 `;
