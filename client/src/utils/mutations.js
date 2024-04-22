@@ -48,6 +48,7 @@ mutation AddMilestone($projectId: ID!, $name: String!, $dueDate: String!) {
       name
     }
   }
+}
 `;
 
 export const ADD_FEATURE = gql`
