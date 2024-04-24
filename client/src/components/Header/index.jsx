@@ -1,6 +1,8 @@
-import { Link } from 'react-router-dom';
-
-import Auth from '../../utils/auth';
+import { Link } from "react-router-dom";
+import "./index.css";
+import Navbar from "../Navbar";
+import Auth from "../../utils/auth";
+import logo from "../../assets/htlogo.jpg";
 
 const Header = () => {
   const logout = (event) => {
@@ -8,36 +10,49 @@ const Header = () => {
     Auth.logout();
   };
   return (
-    <header className="bg-primary text-light mb-4 py-3 flex-row align-center">
-      <div className="container flex-row justify-space-between-lg justify-center align-center">
-        <div>
-          <Link className="text-light" to="/">
-            <h1 className="m-0">Title</h1>
-          </Link>
-          <p className="m-0">Subtitle</p>
+    <header className="">
+      <div className="flex-container-row">
+        <div className="flex-container-row">
+          <div>
+            <img src={logo} alt="HT Project Manager logo" />
+          </div>
+          <div>
+            <Link to="/">
+              <h1>HT Project Manager</h1>
+            </Link>
+            <p>Project management made easy</p>
+          </div>
         </div>
-        <div>
-          {Auth.loggedIn() ? (
-            <>
-              <Link className="btn btn-lg btn-info m-2" to="/me">
-                {/* Run the getProfile() method to get access to the unencrypted token value in order to retrieve the user's username  */}
+        {Auth.loggedIn() ? (
+          <div className="flex-container-column login">
+            <div>
+              <Link className="login" to="/me">
                 {Auth.getUser().authenticatedPerson.username}
               </Link>
-              <button className="btn btn-lg btn-light m-2" onClick={logout}>
+            </div>
+            <div>
+              <button className="login" onClick={logout}>
                 Logout
               </button>
-            </>
-          ) : (
-            <>
-              <Link className="btn btn-lg btn-info m-2" to="/login">
+            </div>
+          </div>
+        ) : (
+          <div className="flex-container-column">
+            <div className="login">
+              <Link className="" to="/login">
                 Login
               </Link>
-              <Link className="btn btn-lg btn-light m-2" to="/signup">
+            </div>
+            <div className="login">
+              <Link className="" to="/signup">
                 Signup
               </Link>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
+      </div>
+      <div>
+        <Navbar />
       </div>
     </header>
   );

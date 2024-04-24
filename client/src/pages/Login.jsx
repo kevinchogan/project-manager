@@ -38,12 +38,11 @@ const Login = (props) => {
   };
 
   return (
-    //TODO: Update these classes. Taken from boilerplate signup page
-    <main className="flex-row justify-center mb-4">
-      <div className="col-12 col-lg-10">
-        <div className="card">
-          <h4 className="card-header bg-dark text-light p-2">Login</h4>
-          <div className="card-body">
+    <main className="">
+      <div className="">
+        <div className="">
+          <h4 className="">Login</h4>
+          <div className="">
             {data ? (
               <p>
                 Success! You may now head{' '}
@@ -52,7 +51,7 @@ const Login = (props) => {
             ) : (
               <form onSubmit={handleFormSubmit}>
                 <input
-                  className="form-input"
+                  className=""
                   placeholder="Your email"
                   name="email"
                   type="email"
@@ -60,7 +59,7 @@ const Login = (props) => {
                   onChange={handleChange}
                 />
                 <input
-                  className="form-input"
+                  className=""
                   placeholder="******"
                   name="password"
                   type="password"
@@ -68,7 +67,7 @@ const Login = (props) => {
                   onChange={handleChange}
                 />
                 <button
-                  className="btn btn-block btn-primary"
+                  className=""
                   style={{ cursor: 'pointer' }}
                   type="submit"
                 >
@@ -78,7 +77,7 @@ const Login = (props) => {
             )}
 
             {error && (
-              <div className="my-3 p-3 bg-danger text-white">
+              <div className="">
                 {error.message}
               </div>
             )}

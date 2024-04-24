@@ -1,9 +1,11 @@
-//fake homepage to test out functionality
+import Navbar from '../components/Navbar'
+
 const Home = () => {
   
     return (
       <main>
-        <div className="flex-row justify-center">
+        
+        <div className="main-body">
             Empty Homepage
         </div>
       </main>

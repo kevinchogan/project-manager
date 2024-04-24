@@ -1,0 +1,48 @@
+h1 {
+    margin: 0;
+    font-size: 3.2rem;
+    color: black;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+p {
+    margin: 0;
+    color: black;
+}
+
+ul {
+    margin: 0;
+}
+
+header {
+    background-color: rgb(131, 199, 178);
+}
+
+img {
+    margin: 10px;
+    width: 100px;
+}
+
+.flex-container-row {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.flex-container-column {
+    display:flex;
+    flex-direction: column;
+    justify-content:first baseline;
+}
+
+.login {
+    margin: 0.25rem;
+}
+.box-borders {
+    border: 1px solid black;
+    padding: 1px;
+}
