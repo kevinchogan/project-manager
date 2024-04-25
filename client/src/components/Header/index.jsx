@@ -44,8 +44,9 @@ const Header = () => {
               </Link>
             </div>
             <div className="login">
+              <p>New user?</p>
               <Link className="" to="/signup">
-                Signup
+                Start here
               </Link>
             </div>
           </div>

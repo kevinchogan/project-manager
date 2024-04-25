@@ -38,11 +38,9 @@ const Login = (props) => {
   };
 
   return (
-    <main className="">
-      <div className="">
-        <div className="">
-          <h4 className="">Login</h4>
-          <div className="">
+    <main>
+          <div>
+          <h4>Login</h4>
             {data ? (
               <p>
                 Success! You may now head{' '}
@@ -82,8 +80,6 @@ const Login = (props) => {
               </div>
             )}
           </div>
-        </div>
-      </div>
     </main>
   );
 };

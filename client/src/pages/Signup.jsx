@@ -39,7 +39,7 @@ const Signup = () => {
     };
   
     return (
-      <main className="">
+      <main className="main-body">
         <div className="">
           <div className="">
             <h4 className="">Sign Up</h4>
