@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
-
 const Tasks = () => {
-    return (
-        <main>
-            <div>
-                Task list
-            </div>
-        </main>
-    )
-}
+  return (
+    <main className="main-container">
+      <div>Task List</div>
+    </main>
+  );
+};
 
-export default Tasks
+export default Tasks;

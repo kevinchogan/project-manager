@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
-
 const Disciplines = () => {
-    return (
-        <main>
-            <div className="main-body">
-                Discipline list
-            </div>
-        </main>
-    )
-}
+  return (
+    <main className="main-container">
+      <div>Discipline List</div>
+    </main>
+  );
+};
 
-export default Disciplines
+export default Disciplines;

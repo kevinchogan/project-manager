@@ -1,5 +1,5 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Outfit", Helvetica, Arial, sans-serif;
   font-weight: 400;
 
   color: black;
@@ -24,4 +24,20 @@ main {
 
 main h4 {
   margin: 0;
+}
+
+.main-container {
+  display: flex;            /* Enable Flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  height: 100%;           /* Make the main container take at least the full height of the viewport */
+  width: 100%;             /* Optional: ensure the container takes full width */
+  text-align: center;      /* Center text within the content container */
+}
+
+.content-container {
+  display: flex;            /* Enable Flexbox for inner container */
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  flex-direction: column;  /* Stack children vertically */
 }
