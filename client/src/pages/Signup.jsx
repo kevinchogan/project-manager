@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { ADD_USER } from "../utils/mutations";
+import { GET_DISCIPLINES } from '../utils/queries';
 
 import Auth from "../utils/auth";
 
@@ -11,8 +12,10 @@ const Signup = () => {
     username: "",
     email: "",
     password: "",
+    discipline: "",
   });
   const [addUser, { error, data }] = useMutation(ADD_USER);
+  const { data: disciplineData, loading: disciplineLoading, error: disciplineError } = useQuery(GET_DISCIPLINES);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -49,37 +52,51 @@ const Signup = () => {
         ) : (
           <form onSubmit={handleFormSubmit}>
             <div className="form-row">
-            <label for="username">Username: </label>
-            <input
-              className=""
-              placeholder="Your username"
-              name="username"
-              type="text"
-              value={formState.name}
-              onChange={handleChange}
-            />
+              <label htmlFor="username">Username: </label>
+              <input
+                className=""
+                placeholder="Your username"
+                name="username"
+                type="text"
+                value={formState.name}
+                onChange={handleChange}
+              />
             </div>
             <div className="form-row">
-            <label for="email">Email: </label>
-            <input
-              className=""
-              placeholder="Your email"
-              name="email"
-              type="email"
-              value={formState.email}
-              onChange={handleChange}
-            />
+              <label htmlFor="email">Email: </label>
+              <input
+                className=""
+                placeholder="Your email"
+                name="email"
+                type="email"
+                value={formState.email}
+                onChange={handleChange}
+              />
             </div>
             <div className="form-row">
-            <label for="password">Password: </label>
-            <input
-              className=""
-              placeholder="******"
-              name="password"
-              type="password"
-              value={formState.password}
-              onChange={handleChange}
-            />
+              <label htmlFor="password">Password: </label>
+              <input
+                className=""
+                placeholder="******"
+                name="password"
+                type="password"
+                value={formState.password}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-row">
+              <label htmlFor="discipline">Discipline:</label>
+              <select
+                id="discipline"
+                name="discipline"
+                value={formState.discipline}
+                onChange={handleChange}
+                disabled={disciplineLoading}
+              >
+                {disciplineData && disciplineData.disciplines.map((d) => (
+                  <option key={d._id} value={d._id}>{d.name}</option>
+                ))}
+              </select>
             </div>
             <div className="button-row">
               <button className="" style={{ cursor: "pointer" }} type="submit">

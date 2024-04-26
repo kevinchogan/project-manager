@@ -47,7 +47,8 @@ header .login {
     text-align: center;
 }
 
-header .login a {
+header .login a,
+header .login button {
     display: inline-block;
     width: 80px;
     box-shadow: inset 2px 2px 10px rgba(255, 255, 255, 0.2), 
@@ -57,6 +58,7 @@ header .login a {
     border-radius: 5px;
     padding: 6px;
     font-size: small;
+    border: none;
 }
 
 header .login p {
@@ -64,13 +66,15 @@ header .login p {
     line-height: 20px;
 }
 
-header .login a:hover {
+header .login a:hover,
+header .login button:hover {
     box-shadow:0 0 5px rgba(0, 0, 0, 0.5),
     inset 2px 2px 10px rgba(255, 255, 255, 0.2), 
                 inset -2px -2px 10px rgba(0, 0, 0, 0.5);
 }
 
-header .login a:active {
+header .login a:active,
+header .login button:active {
     box-shadow: inset 2px 2px 10px rgba(0, 0, 0, 0.2), 
     inset -2px -2px 10px rgba(255, 255, 255, 0.5);
     background-color: rgb(191, 233, 219);   

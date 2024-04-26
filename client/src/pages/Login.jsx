@@ -48,7 +48,7 @@ const Login = (props) => {
         ) : (
           <form onSubmit={handleFormSubmit}>
             <div className="form-row">
-              <label for="email">Email: </label>
+              <label htmlFor="email">Email: </label>
               <input
                 className=""
                 placeholder="Your email"
@@ -59,7 +59,7 @@ const Login = (props) => {
               />
             </div>
             <div className="form-row">
-              <label for="password">Password: </label>
+              <label htmlFor="password">Password: </label>
               <input
                 className=""
                 placeholder="******"

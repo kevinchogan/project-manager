@@ -21,6 +21,10 @@ nav {
   background-color: rgb(220, 255, 243);
 }
 
+.nav-link:active {
+  background-color: white;
+}
+
 .nav-active {
   background-color: white;
 }

@@ -26,9 +26,7 @@ const Header = () => {
         {Auth.loggedIn() ? (
           <div className="flex-container-column login">
             <div>
-              <Link className="login" to="/me">
-                {Auth.getUser().authenticatedPerson.username}
-              </Link>
+                Welcome {Auth.getUser().authenticatedPerson.username}!
             </div>
             <div>
               <button className="login" onClick={logout}>

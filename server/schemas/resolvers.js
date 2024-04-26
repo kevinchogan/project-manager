@@ -74,15 +74,12 @@ const resolvers = {
       throw AuthenticationError;
     },
     disciplines: async (Parent, args, context) => {
-      if (context.user) {
-        try {
-          return await Discipline.find();
-        } catch (error) {
-          console.error("Failed to get disciplines!");
-          throw new Error(`Failed to get disciplines: ${error.message}`);
-        }
+      try {
+        return await Discipline.find();
+      } catch (error) {
+        console.error("Failed to get disciplines!");
+        throw new Error(`Failed to get disciplines: ${error.message}`);
       }
-      throw AuthenticationError;
     },
     tasks: async (parent, { id }, context) => {
       if (context.user) {
@@ -198,7 +195,9 @@ const resolvers = {
           await Project.findByIdAndUpdate(projectId, {
             $push: { milestones: milestone._id },
           });
-          milestone = await Milestone.findById(milestone._id).populate("project");
+          milestone = await Milestone.findById(milestone._id).populate(
+            "project"
+          );
           return milestone;
         } catch (error) {
           console.error("Failed to add milestone!");
@@ -224,7 +223,9 @@ const resolvers = {
             { _id: milestoneId },
             { $push: { features: feature._id } }
           );
-          feature = await Feature.findById(feature._id).populate("owner").populate("milestone");
+          feature = await Feature.findById(feature._id)
+            .populate("owner")
+            .populate("milestone");
           return feature;
         } catch (error) {
           console.error("Failed to add feature!");
@@ -247,7 +248,9 @@ const resolvers = {
             { _id: featureId },
             { $push: { tasks: task._id } }
           );
-          task = await Task.findById(task._id).populate("resource").populate("feature");
+          task = await Task.findById(task._id)
+            .populate("resource")
+            .populate("feature");
           return task;
         } catch (error) {
           console.error("Failed to add task!");
@@ -394,14 +397,16 @@ const resolvers = {
       if (context.user) {
         try {
           const milestones = await Milestone.find({ project: projectId });
-          const milestoneIds = milestones.map(milestone => milestone._id);
-          
-          const features = await Feature.find({ milestone: { $in: milestoneIds } });
-          const featureIds = features.map(feature => feature._id);
-          
+          const milestoneIds = milestones.map((milestone) => milestone._id);
+
+          const features = await Feature.find({
+            milestone: { $in: milestoneIds },
+          });
+          const featureIds = features.map((feature) => feature._id);
+
           const tasks = await Task.find({ feature: { $in: featureIds } });
-          const taskIds = tasks.map(task => task._id);
-    
+          const taskIds = tasks.map((task) => task._id);
+
           if (taskIds.length > 0) {
             await Task.deleteMany({ _id: { $in: taskIds } });
           }
@@ -411,31 +416,33 @@ const resolvers = {
           if (milestoneIds.length > 0) {
             await Milestone.deleteMany({ _id: { $in: milestoneIds } });
           }
-    
+
           const project = await Project.findOneAndDelete({ _id: projectId });
           if (!project) {
             throw new Error("Project not found or already deleted");
           }
-    
+
           return project;
         } catch (error) {
           console.error("Failed to delete project!");
           throw new Error(`Failed to delete project: ${error.message}`);
         }
       }
-      throw new Error('You must be logged in to perform this action.');
-    },    
+      throw new Error("You must be logged in to perform this action.");
+    },
     deleteMilestone: async (parent, { milestoneId }, context) => {
       if (context.user) {
         try {
           const features = await Feature.find({ milestone: milestoneId });
-          const taskIds = features.flatMap(feature => feature.tasks);
+          const taskIds = features.flatMap((feature) => feature.tasks);
           if (taskIds.length > 0) {
             await Task.deleteMany({ _id: { $in: taskIds } });
           }
           await Feature.deleteMany({ milestone: milestoneId });
 
-          const milestone = await Milestone.findOneAndDelete({ _id: milestoneId });
+          const milestone = await Milestone.findOneAndDelete({
+            _id: milestoneId,
+          });
           if (!milestone) {
             throw new Error("Milestone not found or already deleted");
           }
@@ -463,7 +470,7 @@ const resolvers = {
         }
       }
       throw AuthenticationError;
-    }, 
+    },
     deleteTask: async (parent, { taskId }, context) => {
       if (context.user) {
         try {
