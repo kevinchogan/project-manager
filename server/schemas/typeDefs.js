@@ -81,9 +81,11 @@ const typeDefs = `
     addMilestone(projectId: ID!, name: String!, dueDate: String!): Milestone
     addFeature(milestoneId: ID!, name: String!, owner:ID!): Feature
     addTask(featureId: ID!, taskData: TaskInput!): Task
+    addDiscipline(name: String!): Discipline
     moveFeature(featureId: ID!, newMilestoneId: ID!): Feature
     moveTask(taskId: ID!, newFeatureId: ID!): Task
     updateTask(taskId: ID!, taskData: TaskInput): Task
+    updateDiscipline(discId: ID!, name: String): Discipline
     addPredecessor(taskId: ID!, predId: ID!): Task
     removePredecessor(taskId: ID!, predId: ID!): Task
     deleteUser(userId: ID!): User
@@ -91,6 +93,7 @@ const typeDefs = `
     deleteMilestone(milestoneId: ID!): Milestone
     deleteFeature(featureId: ID!): Feature
     deleteTask(taskId: ID!): Task
+    deleteDiscipline(discId: ID!): Discipline
   }
 `;
 

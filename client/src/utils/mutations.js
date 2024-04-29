@@ -39,16 +39,16 @@ export const ADD_PROJECT = gql`
 `;
 
 export const ADD_MILESTONE = gql`
-mutation AddMilestone($projectId: ID!, $name: String!, $dueDate: String!) {
-  addMilestone(projectId: $projectId, name: $name, dueDate: $dueDate) {
-    _id
-    name
-    project {
+  mutation AddMilestone($projectId: ID!, $name: String!, $dueDate: String!) {
+    addMilestone(projectId: $projectId, name: $name, dueDate: $dueDate) {
       _id
       name
+      project {
+        _id
+        name
+      }
     }
   }
-}
 `;
 
 export const ADD_FEATURE = gql`
@@ -83,6 +83,15 @@ export const ADD_TASK = gql`
         _id
         name
       }
+    }
+  }
+`;
+
+export const ADD_DISCIPLINE = gql`
+  mutation AddDiscipline($name: String!) {
+    addDiscipline(name: $name) {
+      _id
+      name
     }
   }
 `;
@@ -127,6 +136,15 @@ export const UPDATE_TASK = gql`
       predecessors {
         _id
       }
+    }
+  }
+`;
+
+export const UPDATE_DISCIPLINE = gql`
+  mutation UpdateDiscipline($discId: ID!, $name: String) {
+    updateDiscipline(discId: $discId, name: $name) {
+      _id
+      name
     }
   }
 `;
@@ -185,6 +203,15 @@ export const DELETE_FEATURE = gql`
 export const DELETE_TASK = gql`
   mutation DeleteTask($taskId: ID!) {
     deleteTask(taskId: $taskId) {
+      name
+    }
+  }
+`;
+
+export const DELETE_DISCIPLINE = gql`
+  mutation DeleteDiscipline($discId: ID!) {
+    deleteDiscipline(discId: $discId) {
+      _id
       name
     }
   }

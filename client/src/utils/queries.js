@@ -29,6 +29,7 @@ export const GET_ME = gql`
 export const GET_DISCIPLINES = gql`
   query Disciplines {
     disciplines {
+      _id
       name
     }
   }
@@ -128,48 +129,48 @@ export const GET_PROJECT = gql`
 `;
 
 export const TASKS_BY_RESOURCE = gql`
-query TasksByResource($resourceId: ID!) {
-  tasksByResource(resourceId: $resourceId) {
-    _id
-    name
-    design
-    estimate
-    commitment
-    percent_complete
-    actual
-    predecessors {
+  query TasksByResource($resourceId: ID!) {
+    tasksByResource(resourceId: $resourceId) {
       _id
       name
-      resource {
-        username
+      design
+      estimate
+      commitment
+      percent_complete
+      actual
+      predecessors {
+        _id
+        name
+        resource {
+          username
+        }
+      }
+      feature {
+        _id
+        name
       }
     }
-    feature {
-      _id
-      name
-    }
   }
-}
 `;
 
 export const FEATURES_BY_RESOURCE = gql`
-query FeaturesByResource($resourceId: ID!) {
-  featuresByResource(resourceId: $resourceId) {
-    _id
-    name
-    owner {
-      username
-    }
-    milestone {
+  query FeaturesByResource($resourceId: ID!) {
+    featuresByResource(resourceId: $resourceId) {
       _id
       name
-    }
-    tasks {
-      name
-      resource {
+      owner {
         username
+      }
+      milestone {
+        _id
+        name
+      }
+      tasks {
+        name
+        resource {
+          username
+        }
       }
     }
   }
-}
 `;

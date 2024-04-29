@@ -259,6 +259,18 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
+    addDiscipline: async (parent, { name }, context) => {
+      if (context.user) {
+        try {
+          let discipline = await Discipline.create({ name });
+          return discipline;
+        } catch (error) {
+          console.error("Failed to add discipline!");
+          throw new Error(`Failed to add discipline: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
+    },
     moveFeature: async (parent, { featureId, newMilestoneId }, context) => {
       if (context.user) {
         try {
@@ -333,6 +345,21 @@ const resolvers = {
         } catch (error) {
           console.error("Failed to update task!");
           throw new Error(`Failed top update task: ${error.message}`);
+        }
+      }
+    },
+    updateDiscipline: async (parent, { discId, name }, context) => {
+      if (context.user) {
+        try {
+          const discipline = await Discipline.findByIdAndUpdate(
+            discId,
+            { name },
+            { new: true }
+          );
+          return discipline;
+        } catch (error) {
+          console.error("Failed to update discipline!");
+          throw new Error(`Failed top update discipline: ${error.message}`);
         }
       }
     },
@@ -486,6 +513,21 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
+    deleteDiscipline: async (parent, { discId }, context) => {
+      if (context.user) {
+        try {
+          const discipline = await Discipline.findOneAndDelete({ _id: discId });
+          if (!discipline) {
+            throw new Error("Discipline not found or already deleted");
+          }
+          return discipline;
+        } catch (error) {
+          console.error("Failed to delete discipline!");
+          throw new Error(`Failed to delete discipline: ${error.message}`);
+        }
+      }
+      throw AuthenticationError;
+    },    
   },
 };
 
