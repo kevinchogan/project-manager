@@ -38,6 +38,12 @@ const taskSchema = new Schema({
       ref: "task",
     },
   ],
+  successors: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "task",
+    },
+  ],
 });
 
 const Task = model("task", taskSchema);

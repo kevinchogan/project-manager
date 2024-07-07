@@ -27,6 +27,7 @@ const typeDefs = `
     design: String
     feature: Feature
     predecessors: [Task]
+    successors: [Task]
   }
 
   type Feature {
@@ -88,6 +89,8 @@ const typeDefs = `
     updateDiscipline(discId: ID!, name: String): Discipline
     addPredecessor(taskId: ID!, predId: ID!): Task
     removePredecessor(taskId: ID!, predId: ID!): Task
+    addSuccessor(taskId: ID!, succId: ID!): Task
+    removeSuccessor(taskId: ID!, succId: ID!): Task
     deleteUser(userId: ID!): User
     deleteProject(projectId: ID!): Project
     deleteMilestone(milestoneId: ID!): Milestone

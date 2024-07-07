@@ -157,6 +157,9 @@ export const ADD_PREDECESSOR = gql`
       predecessors {
         _id
       }
+      successors {
+        _id
+      }      
     }
   }
 `;
@@ -169,8 +172,41 @@ export const REMOVE_PREDECESSOR = gql`
       predecessors {
         _id
       }
+      successors {
+        _id
+      }      
     }
   }
+`;
+
+export const ADD_SUCCESSOR = gql`
+mutation AddSuccessor($taskId: ID!, $succId: ID!) {
+  addSuccessor(taskId: $taskId, succId: $succId) {
+    _id
+    name
+    predecessors {
+      _id
+    }
+    successors {
+      _id
+    }
+  }
+}
+`;
+
+export const REMOVE_SUCCESSOR = gql`
+mutation RemoveSuccessor($taskId: ID!, $succId: ID!) {
+  removeSuccessor(taskId: $taskId, succId: $succId) {
+    _id
+    name
+    predecessors {
+      _id
+    }
+    successors {
+      _id
+    }
+  }
+}
 `;
 
 export const DELETE_PROJECT = gql`

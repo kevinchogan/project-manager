@@ -380,6 +380,11 @@ const resolvers = {
             { $push: { predecessors: predId } },
             { new: true }
           );
+          await Task.findByIdAndUpdate(
+            predId,
+            { $push: { successors: taskId } },
+            { new: true }
+          );
           return updatedTask;
         } catch (error) {
           console.error("Add predecessor failed!");
@@ -402,10 +407,71 @@ const resolvers = {
             { $pull: { predecessors: predId } },
             { new: true }
           );
+          await Task.findByIdAndUpdate(
+            predId,
+            { $pull: { successors: taskId } },
+            { new: true }
+          );
           return updatedTask;
         } catch (error) {
           console.error("Remove predecessor failed!");
           throw new Error(`Remove predecessor failed: ${error.message}`);
+        }
+      }
+    },
+    addSuccessor: async (parent, { taskId, succId }, context) => {
+      if (context.user) {
+        try {
+          const task = await Task.findById(taskId);
+          if (!task) {
+            throw new Error("Task not found");
+          }
+          if (task.successors.includes(succId)) {
+            throw new Error(
+              "This successor is already present for this task"
+            );
+          }
+          const updatedTask = await Task.findByIdAndUpdate(
+            taskId,
+            { $push: { successors: succId } },
+            { new: true }
+          );
+          await Task.findByIdAndUpdate(
+            succId,
+            { $push: { predecessors: taskId } },
+            { new: true }
+          );
+          return updatedTask;
+        } catch (error) {
+          console.error("Add successor failed!");
+          throw new Error(`Add successor failed: ${error.message}`);
+        }
+      }
+    },
+    removeSuccessor: async (parent, { taskId, succId }, context) => {
+      if (context.user) {
+        try {
+          const task = await Task.findById(taskId);
+          if (!task) {
+            throw new Error("Task not found");
+          }
+          if (!task.successors.includes(succId)) {
+            throw new Error("Successor not found in the task");
+          }
+          const updatedTask = await Task.findByIdAndUpdate(
+            taskId,
+            { $pull: { successors: succId } },
+            { new: true }
+          );
+          await Task.findByIdAndUpdate(
+            succId,
+            { $pull: { predecessors: taskId } },
+            { new: true }
+          );
+          return updatedTask;
+        } catch (error) {
+          console.error("Remove successor failed!");
+          throw new Error(`Remove successor failed: ${error.message}`);
         }
       }
     },
